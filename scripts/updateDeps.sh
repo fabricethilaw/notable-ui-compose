@@ -16,8 +16,8 @@
 
 ########################################################################
 #
-# Updates dependencies using Jetchat as the source of truth (then copies Jetchat's 
-# output into each sample)
+# Updates dependencies using sample as the source of truth (then copies sample's
+# output into each project)
 #
 # Example: To run build over all projects run:
 #     ./scripts/updateDeps.sh
@@ -26,7 +26,7 @@
 
 set -xe
 
-./JetNews/gradlew -p ./JetNews versionCatalogUpdate 
+./sample/gradlew -p ./sample versionCatalogUpdate
 
-cp JetNews/gradle/libs.versions.toml scripts/libs.versions.toml
+cp sample/gradle/libs.versions.toml scripts/libs.versions.toml
 ./scripts/duplicate_version_config.sh
