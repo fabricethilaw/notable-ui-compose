@@ -25,8 +25,11 @@
 
 set -xe
 
-# cp scripts/libs.versions.toml ui-templates/avatar-compose/gradle/libs.versions.toml
+cp scripts/libs.versions.toml sample/gradle/libs.versions.toml
+cp scripts/libs.versions.toml ui-patterns/avatar-compose/gradle/libs.versions.toml
 
-# cp scripts/toml-updater-config.gradle ui-templates/avatar-compose/buildscripts/toml-updater-config.gradle
+cp scripts/toml-updater-config.gradle sample/buildscripts/toml-updater-config.gradle
+cp scripts/toml-updater-config.gradle ui-patterns/avatar-compose/buildscripts/toml-updater-config.gradle
 
-# cp scripts/init.gradle.kts ui-templates/avatar-compose/buildscripts/init.gradle.kts
+cp scripts/init.gradle.kts sample/buildscripts/init.gradle.kts
+cp scripts/init.gradle.kts ui-patterns/avatar-compose/buildscripts/init.gradle.kts

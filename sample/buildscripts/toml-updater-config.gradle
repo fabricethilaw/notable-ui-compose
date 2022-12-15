@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Notable UI
+ * Copyright 2022 The Notable UI
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 versionCatalogUpdate {
-    // Learn more from https://github.com/littlerobots/version-catalog-update-plugin
-
     sortByKey.set(true)
 
     keep {
@@ -28,7 +26,7 @@ versionCatalogUpdate {
     }
 }
 
-def isNotStable = { String version ->
+def isNonStable = { String version ->
     def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
     def regex = /^[0-9,.v-]+(-r)?$/
     return !stableKeyword && !(version ==~ regex)
@@ -38,8 +36,7 @@ tasks.named("dependencyUpdates").configure {
     resolutionStrategy {
         componentSelection {
             all {
-                // Rejects a dependency version that is not stable
-                if (isNotStable(it.candidate.version) && !isNonStable(it.currentVersion)) {
+                if (isNonStable(it.candidate.version) && !isNonStable(it.currentVersion)) {
                     reject('Release candidate')
                 }
             }
