@@ -1,7 +1,7 @@
-# Notable UI - Ui Kits for Compose
+# Notable UI - Ui Kits for Compose (Work in progress)
 <img src="readme/samples_montage.gif" alt="Notable UI - More Compose Samples" width="824" />
 
-This repository contains a set of individual Android Studio projects to help you build common ui patterns with Jetpack Compose toolkit in Android. Each sample demonstrates different use cases, complexity levels and APIs.
+This repository contains a set of individual Android Studio projects to help you build common ui patterns with Jetpack Compose toolkit in Android. Each sample demonstrates a different use case.
 
 For more information, please [read the documentation](https://notableui.com)
 
