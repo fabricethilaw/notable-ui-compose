@@ -1,0 +1,22 @@
+*.iml
+# Gradle
+.gradle
+/build
+
+# local
+/local.properties
+
+# IntelliJ .idea folders
+/.idea
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+
+# General
+.DS_Store
+/captures
+.externalNativeBuild
+.cxx

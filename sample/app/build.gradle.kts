@@ -96,6 +96,8 @@ dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
 
+    coreLibraryDesugaring(libs.core.jdk.desugaring)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.activity.compose)

@@ -33,7 +33,7 @@ To make any other manual updates to dependencies (ie add a new dependency or set
 
 ## License
 ```
-Copyright 2022 Notable UI
+Copyright 2022 Fabrice Thilaw KIKI
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
