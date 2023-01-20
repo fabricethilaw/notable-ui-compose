@@ -29,35 +29,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.notable.ui.theme.MyApplicationTheme
 
-public class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MyApplicationTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
-                }
-            }
+class MainActivity : ComponentActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent {
+      MyApplicationTheme {
+        // A surface container using the 'background' color from the theme
+        Surface(
+          modifier = Modifier.fillMaxSize(),
+          color = MaterialTheme.colors.background
+        ) {
+          Greeting("Android")
         }
+      }
     }
+  }
 }
 
 @Composable
-public fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-    Button(onClick = {
+fun Greeting(name: String) {
+  Text(text = "Hello $name!")
+  Button(onClick = {
 
-    }) { Text(text = "Click me") }
+  }) { Text(text = "Click me") }
 }
 
 @Preview(showBackground = true)
 @Composable
-public fun DefaultPreview() {
-    MyApplicationTheme {
-        Greeting("Android")
-    }
+fun DefaultPreview() {
+  MyApplicationTheme {
+    Greeting("Android")
+  }
 }

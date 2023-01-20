@@ -33,12 +33,25 @@ android {
   }
 }
 
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+  kotlinOptions.freeCompilerArgs += listOf(
+    "-Xexplicit-api=strict"
+  )
+}
+
 dependencies {
+  val composeBom = platform(libs.androidx.compose.bom)
+  implementation(composeBom)
+  androidTestImplementation(composeBom)
+  implementation(libs.kotlin.stdlib)
+  implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.compose.ui)
+  implementation(libs.androidx.compose.runtime)
+  implementation(libs.androidx.compose.ui.util)
   implementation(libs.androidx.compose.material)
   implementation(libs.androidx.compose.animation)
-  implementation(libs.androidx.compose.runtime)
-  implementation(libs.androidx.core.ktx)
+  implementation(libs.androidx.compose.foundation)
+  implementation(libs.androidx.compose.foundation.layout)
   implementation(libs.coil.kt.compose)
 
   implementation(libs.androidx.compose.ui.tooling.preview)

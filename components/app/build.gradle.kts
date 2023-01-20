@@ -81,12 +81,6 @@ android {
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-  kotlinOptions.freeCompilerArgs += listOf(
-    "-Xexplicit-api=strict"
-  )
-}
-
 dependencies {
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
