@@ -1,12 +1,18 @@
 package com.notable.ui.text
 
-import android.util.Log
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.InlineTextContent
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.*
@@ -20,26 +26,26 @@ import androidx.compose.ui.unit.*
 import java.util.*
 
 /**
- * Specifies auto-size configuration for displaying a text with [AutoSizeText].
+ * Specifies dynamic size configuration for displaying a text with [ResponsiveText].
  */
-public sealed interface AutoSizeOption {
+public sealed interface TextScale {
   /**
    * Do not scale the text size.
    */
-  public object None : AutoSizeOption
+  public object None : TextScale
 
   /**
    * Scale the text size both horizontally and vertically to fit within the
    * container by using the default auto-size configuration.
    */
-  public object Uniform : AutoSizeOption
+  public object Uniform : TextScale
 
   /**
-   * Represents a list of sizes in text units from which [AutoSizeText] should pick the optimal value.
+   * Represents a list of sizes in text units from which [ResponsiveText] should pick the optimal value.
    * If at least one value from the sizes is valid
-   * then the auto-size behavior is enabled for [AutoSizeText].
+   * then the auto-size behavior is enabled for [ResponsiveText].
    */
-  public data class PresetSizes(public val sizes: List<TextUnit>) : AutoSizeOption
+  public data class PresetSizes(public val sizes: List<TextUnit>) : TextScale
 
   /**
    * Provide a fine-grained configuration for text auto sizing.
@@ -56,15 +62,14 @@ public sealed interface AutoSizeOption {
     public val minTextSize: TextUnit,
     public val maxTextSize: TextUnit,
     public val stepGranularity: TextUnit
-  ) : AutoSizeOption
+  ) : TextScale
 }
 
 
 /**
- * High level stateless element that displays auto sizeable text and provides semantics / accessibility information.
- * To display the text, this component firstly performs a binary search to find the largest text size
- * that will still fit within the available space. Then the text is drawn once with the optimal size.
- *
+ * High level stateless element that displays auto-sizing text and provides semantics / accessibility information.
+ * The optimal font size is determined by performing a binary search to find the largest text size
+ * that will still fit within the available space.
  *
  * The default [style] uses the [LocalTextStyle] provided by the [MaterialTheme] / components. If
  * you are setting your own style, you may want to consider first retrieving [LocalTextStyle],
@@ -112,12 +117,12 @@ public sealed interface AutoSizeOption {
  * text, baselines and other details. The callback can be used to add additional decoration or
  * functionality to the text. For example, to draw selection around the text.
  * @param style Style configuration for the text such as color, font, line height etc.
- * @param autoSizeOption  The auto-size configuration. It specifies whether this component should automatically scale the text to try to perfectly fit within the layout bounds.
+ * @param textScale  The auto-size configuration. It specifies whether this component should automatically scale the text to try to perfectly fit within the layout bounds.
  *
  * @throws IllegalArgumentException if any of the auto text-sizing option params are invalid.
  */
 @Composable
-public fun AutoSizeText(
+public fun ResponsiveText(
   text: String,
   modifier: Modifier = Modifier,
   color: Color = Color.Unspecified,
@@ -134,11 +139,17 @@ public fun AutoSizeText(
   maxLines: Int = Int.MAX_VALUE,
   onTextLayout: (TextLayoutResult) -> Unit = {},
   style: TextStyle = LocalTextStyle.current,
-  autoSizeOption: AutoSizeOption
+  textScale: TextScale
 ) {
+  val textColor = color.takeOrElse {
+    style.color.takeOrElse {
+      LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+    }
+  }
+
   val mergedStyle = style.merge(
     TextStyle(
-      color = color,
+      color = textColor,
       fontSize = fontSize,
       fontWeight = fontWeight,
       textAlign = textAlign,
@@ -146,13 +157,13 @@ public fun AutoSizeText(
       fontFamily = fontFamily,
       textDecoration = textDecoration,
       fontStyle = fontStyle,
-      letterSpacing = letterSpacing
+      letterSpacing = letterSpacing,
     )
   )
-  if (autoSizeOption == AutoSizeOption.None) {
-    Text(
+  if (textScale == TextScale.None) {
+    BasicText(
+      modifier = modifier,
       text = text,
-      fontSize = fontSize,
       style = mergedStyle,
       overflow = overflow,
       softWrap = softWrap,
@@ -161,10 +172,10 @@ public fun AutoSizeText(
     )
     return
   }
-  AutoTextBox(
+  ResponsiveTextBox(
     modifier,
-    autoSizeOption,
-    buildAnnotatedString { append(text) },
+    textScale,
+    text,
     mergedStyle,
     maxLines,
     overflow,
@@ -175,9 +186,9 @@ public fun AutoSizeText(
 
 
 /**
- * High level stateless element that displays auto sizeable text and provides semantics / accessibility information.
- * To display the text, this component firstly performs a binary search to find the largest text size
- * that will still fit within the available space. Then the text is drawn once with the optimal size.
+ * High level stateless element that displays auto-sizing text and provides semantics / accessibility information.
+ * The optimal font size is determined by performing a binary search to find the largest text size
+ * that will still fit within the available space.
  *
  *
  * The default [style] uses the [LocalTextStyle] provided by the [MaterialTheme] / components. If
@@ -226,12 +237,12 @@ public fun AutoSizeText(
  * text, baselines and other details. The callback can be used to add additional decoration or
  * functionality to the text. For example, to draw selection around the text.
  * @param style Style configuration for the text such as color, font, line height etc.
- * @param autoSizeOption  The auto-size configuration. It specifies whether this component should automatically scale the text to try to perfectly fit within the layout bounds.
+ * @param textScale  The auto-size configuration. It specifies whether this component should automatically scale the text to try to perfectly fit within the layout bounds.
  *
  * @throws IllegalArgumentException if any of the auto text-sizing option params are invalid.
  */
 @Composable
-public fun AutoSizeText(
+public fun ResponsiveText(
   text: AnnotatedString,
   modifier: Modifier = Modifier,
   color: Color = Color.Unspecified,
@@ -246,13 +257,20 @@ public fun AutoSizeText(
   overflow: TextOverflow = TextOverflow.Clip,
   softWrap: Boolean = true,
   maxLines: Int = Int.MAX_VALUE,
+  inlineContent: Map<String, InlineTextContent> = mapOf(),
   onTextLayout: (TextLayoutResult) -> Unit = {},
   style: TextStyle = LocalTextStyle.current,
-  autoSizeOption: AutoSizeOption
+  textScale: TextScale
 ) {
+  val textColor = color.takeOrElse {
+    style.color.takeOrElse {
+      LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+    }
+  }
+
   val mergedStyle = style.merge(
     TextStyle(
-      color = color,
+      color = textColor,
       fontSize = fontSize,
       fontWeight = fontWeight,
       textAlign = textAlign,
@@ -260,101 +278,173 @@ public fun AutoSizeText(
       fontFamily = fontFamily,
       textDecoration = textDecoration,
       fontStyle = fontStyle,
-      letterSpacing = letterSpacing
+      letterSpacing = letterSpacing,
     )
   )
-  if (autoSizeOption == AutoSizeOption.None) {
-    Text(
+  if (textScale == TextScale.None) {
+    BasicText(
+      modifier = modifier,
       text = text,
-      fontSize = fontSize,
       style = mergedStyle,
       overflow = overflow,
       softWrap = softWrap,
       maxLines = maxLines,
-      onTextLayout = onTextLayout
+      onTextLayout = onTextLayout,
+      inlineContent = inlineContent
     )
     return
   }
-
-  AutoTextBox(
+  ResponsiveTextBox(
     modifier,
-    autoSizeOption,
+    textScale,
     text,
     mergedStyle,
     maxLines,
     overflow,
     softWrap,
-    onTextLayout
+    onTextLayout,
+    inlineContent
   )
 }
 
 @Composable
 @OptIn(ExperimentalTextApi::class)
-private fun AutoTextBox(
+private fun ResponsiveTextBox(
   modifier: Modifier,
-  autoSizeOption: AutoSizeOption,
+  textScale: TextScale,
+  text: String,
+  style: TextStyle,
+  maxLines: Int,
+  overflow: TextOverflow,
+  softWrap: Boolean,
+  onTextLayout: (TextLayoutResult) -> Unit,
+) {
+  val scalingHelper = DynamicTextScalingHelper()
+  BoxWithConstraints(modifier) {
+    val density: Density = LocalDensity.current
+    val textMeasurer = rememberTextMeasurer()
+    val (originalTextSize, optimalTextSize) = when (textScale) {
+      is TextScale.Uniform -> {
+        scalingHelper.setUniformScalingOptionWithDefaults(
+          density,
+          textMeasurer,
+          autoScalingType = AutoScalingType.Uniform,
+          text = buildAnnotatedString { append(text) },
+          textStyle = style,
+          maxLines = maxLines,
+          constraints = constraints
+        )
+      }
+      is TextScale.SizeRange -> {
+        scalingHelper.setScalingWithConfiguration(
+          density,
+          textMeasurer,
+          textScale.minTextSize,
+          textScale.maxTextSize,
+          textScale.stepGranularity,
+          text = buildAnnotatedString { append(text) },
+          textStyle = style,
+          maxLines = maxLines,
+          constraints = constraints
+        )
+      }
+      is TextScale.PresetSizes -> {
+        scalingHelper.setScalingWithPresetSizes(
+          density,
+          textMeasurer,
+          textScale.sizes.toTypedArray(),
+          text = buildAnnotatedString { append(text) },
+          textStyle = style,
+          maxLines = maxLines,
+          constraints = constraints
+        )
+      }
+      else -> {
+        Pair(style.fontSize, style.fontSize)
+      }
+    }
+    BasicText(
+      modifier = Modifier
+        .align(Alignment.Center)
+        .fillMaxSize(),
+      text = text,
+      style = style,
+      overflow = overflow,
+      softWrap = softWrap,
+      maxLines = maxLines,
+      onTextLayout = { onTextLayout.invoke(it) }
+    )
+  }
+}
+
+@Composable
+@OptIn(ExperimentalTextApi::class)
+private fun ResponsiveTextBox(
+  modifier: Modifier,
+  textScale: TextScale,
   text: AnnotatedString,
   style: TextStyle,
   maxLines: Int,
   overflow: TextOverflow,
   softWrap: Boolean,
-  onTextLayout: (TextLayoutResult) -> Unit
+  onTextLayout: (TextLayoutResult) -> Unit,
+  inlineContent: Map<String, InlineTextContent>
 ) {
-  val autoSizeTextHelper = AutoSizeTextHelper()
+  val scalingHelper = DynamicTextScalingHelper()
   BoxWithConstraints(modifier) {
     val density: Density = LocalDensity.current
     val textMeasurer = rememberTextMeasurer()
-    val (originalTextSize, optimalTextSize) =
-      when (autoSizeOption) {
-        is AutoSizeOption.Uniform -> {
-          autoSizeTextHelper.setAutoSizeTextTypeWithDefaults(
-            density, textMeasurer,
-            autoSizeTextType = AutoSizeTextType.Uniform,
-            text = buildAnnotatedString { append(text) },
-            textStyle = style,
-            maxLines = maxLines,
-            constraints = constraints
-          )
-        }
-        is AutoSizeOption.SizeRange -> {
-          autoSizeTextHelper.setAutoSizeTextTypeUniformWithConfiguration(
-            density, textMeasurer,
-            autoSizeOption.minTextSize,
-            autoSizeOption.maxTextSize,
-            autoSizeOption.stepGranularity,
-            text = text,
-            textStyle = style,
-            maxLines = maxLines,
-            constraints = constraints
-          )
-        }
-        is AutoSizeOption.PresetSizes -> {
-          autoSizeTextHelper.setAutoSizeTextTypeUniformWithPresetSizes(
-            density, textMeasurer,
-            autoSizeOption.sizes.toTypedArray(),
-            text = buildAnnotatedString { append(text) },
-            textStyle = style,
-            maxLines = maxLines,
-            constraints = constraints
-          )
-        }
-        else -> {
-          Pair(style.fontSize, style.fontSize)
-        }
+    val (originalTextSize, optimalTextSize) = when (textScale) {
+      is TextScale.Uniform -> {
+        scalingHelper.setUniformScalingOptionWithDefaults(
+          density,
+          textMeasurer,
+          autoScalingType = AutoScalingType.Uniform,
+          text = buildAnnotatedString { append(text) },
+          textStyle = style,
+          maxLines = maxLines,
+          constraints = constraints
+        )
       }
-    Log.i("AutoSizeText", "AutoSizeText: Original: $originalTextSize, optimal: $optimalTextSize")
-    Log.i("AutoSizeText", "AutoSizeText: constraints: $constraints")
-    Text(
+      is TextScale.SizeRange -> {
+        scalingHelper.setScalingWithConfiguration(
+          density,
+          textMeasurer,
+          textScale.minTextSize,
+          textScale.maxTextSize,
+          textScale.stepGranularity,
+          text = text,
+          textStyle = style,
+          maxLines = maxLines,
+          constraints = constraints
+        )
+      }
+      is TextScale.PresetSizes -> {
+        scalingHelper.setScalingWithPresetSizes(
+          density,
+          textMeasurer,
+          textScale.sizes.toTypedArray(),
+          text = buildAnnotatedString { append(text) },
+          textStyle = style,
+          maxLines = maxLines,
+          constraints = constraints
+        )
+      }
+      else -> {
+        Pair(style.fontSize, style.fontSize)
+      }
+    }
+    BasicText(
+      modifier = Modifier
+        .align(Alignment.Center)
+        .fillMaxSize(),
       text = text,
-      fontSize = optimalTextSize,
-      style = style.copy(fontSize = optimalTextSize),
+      style = style,
       overflow = overflow,
       softWrap = softWrap,
       maxLines = maxLines,
-      onTextLayout = {
-        Log.i("AutoSizeText", "AutoSizeText applied: ${it.layoutInput.style.fontSize}")
-        onTextLayout.invoke(it)
-      }
+      onTextLayout = { onTextLayout.invoke(it) },
+      inlineContent = inlineContent
     )
   }
 }

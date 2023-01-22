@@ -82,17 +82,18 @@ android {
 }
 
 dependencies {
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+  implementation(project(mapOf("path" to ":notable-ui")))
+  val composeBom = platform(libs.androidx.compose.bom)
+  implementation(composeBom)
+  androidTestImplementation(composeBom)
 
-    implementation(libs.kotlin.stdlib)
-    implementation(libs.kotlinx.coroutines.android)
+  implementation(libs.kotlin.stdlib)
+  implementation(libs.kotlinx.coroutines.android)
 
-    coreLibraryDesugaring(libs.core.jdk.desugaring)
+  coreLibraryDesugaring(libs.core.jdk.desugaring)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.navigation.compose)
+  implementation(libs.androidx.core.ktx)
+  implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.constraintlayout.compose)
 

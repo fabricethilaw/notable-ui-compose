@@ -19,14 +19,20 @@ package com.notable.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.notable.ui.demos.responsivetext.DemoAutoScalingDownText
+import com.notable.ui.demos.responsivetext.DemoDisableAutoTextSizing
+import com.notable.ui.demos.responsivetext.DemoEnableAutoTextSizing
+import com.notable.ui.demos.responsivetext.DemoOptimalTextOverflow
 import com.notable.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -37,27 +43,33 @@ class MainActivity : ComponentActivity() {
         // A surface container using the 'background' color from the theme
         Surface(
           modifier = Modifier.fillMaxSize(),
-          color = MaterialTheme.colors.background
+          color = Color(0xFFF1F1F1)
         ) {
-          Greeting("Android")
+          DefaultPreview()
         }
       }
     }
   }
 }
 
-@Composable
-fun Greeting(name: String) {
-  Text(text = "Hello $name!")
-  Button(onClick = {
-
-  }) { Text(text = "Click me") }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
   MyApplicationTheme {
-    Greeting("Android")
+    Column(
+      Modifier
+        .padding(16.dp)
+        .scrollable(
+          rememberScrollState(), orientation = Orientation.Vertical
+        )
+    ) {
+      DemoDisableAutoTextSizing()
+      Spacer(modifier = Modifier.height(16.dp))
+      DemoEnableAutoTextSizing()
+      Spacer(modifier = Modifier.height(16.dp))
+      DemoAutoScalingDownText()
+      Spacer(modifier = Modifier.height(16.dp))
+      DemoOptimalTextOverflow()
+    }
   }
 }

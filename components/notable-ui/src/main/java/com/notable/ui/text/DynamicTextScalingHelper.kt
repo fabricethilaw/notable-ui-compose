@@ -1,6 +1,5 @@
 package com.notable.ui.text
 
-import android.util.Log
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -14,10 +13,10 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.floor
 import kotlin.math.roundToInt
 
-internal class AutoSizeTextHelper : AutoSizeableText {
+internal class DynamicTextScalingHelper : AutoSizeableText {
 
   // Auto-size text type.
-  private var mAutoSizeTextType: AutoSizeTextType = AutoSizeTextType.Uniform
+  private var mAutoScalingType: AutoScalingType = AutoScalingType.Uniform
 
   // Specify if auto-size text is needed.
   private var mNeedsAutoSizeText: Boolean = false
@@ -48,22 +47,22 @@ internal class AutoSizeTextHelper : AutoSizeableText {
    * within the layout bounds by using the default auto-size configuration.
    */
   @OptIn(ExperimentalTextApi::class)
-  override fun setAutoSizeTextTypeWithDefaults(
+  override fun setUniformScalingOptionWithDefaults(
     density: Density,
     textMeasurer: TextMeasurer,
-    autoSizeTextType: AutoSizeTextType,
+    autoScalingType: AutoScalingType,
     text: AnnotatedString,
     textStyle: TextStyle,
     maxLines: Int,
     constraints: Constraints,
   ): Pair<TextUnit, TextUnit> {
     if (supportsAutoSizeText()) {
-      when (autoSizeTextType) {
-        AutoSizeTextType.None -> {
+      when (autoScalingType) {
+        AutoScalingType.None -> {
           clearAutoSizeConfiguration()
           return Pair(textStyle.fontSize, textStyle.fontSize)
         }
-        AutoSizeTextType.Uniform -> {
+        AutoScalingType.Uniform -> {
           val autoSizeMinTextSizeInPx = with(density) {
             DEFAULT_AUTO_SIZE_MIN_TEXT_SIZE_IN_SP.toPx()
           }
@@ -103,7 +102,7 @@ internal class AutoSizeTextHelper : AutoSizeableText {
    * @throws IllegalArgumentException if any of the configuration params are invalid.
    */
   @OptIn(ExperimentalTextApi::class)
-  override fun setAutoSizeTextTypeUniformWithConfiguration(
+  override fun setScalingWithConfiguration(
     density: Density,
     textMeasurer: TextMeasurer,
     autoSizeMinTextSize: TextUnit,
@@ -148,7 +147,7 @@ internal class AutoSizeTextHelper : AutoSizeableText {
 
 
   @OptIn(ExperimentalTextApi::class)
-  override fun setAutoSizeTextTypeUniformWithPresetSizes(
+  override fun setScalingWithPresetSizes(
     density: Density,
     textMeasurer: TextMeasurer,
     presetSizes: Array<TextUnit>,
@@ -217,7 +216,7 @@ internal class AutoSizeTextHelper : AutoSizeableText {
     }
 
     // All good, persist the configuration.
-    mAutoSizeTextType = AutoSizeTextType.Uniform
+    mAutoScalingType = AutoScalingType.Uniform
     mAutoSizeMinTextSizeInPx = autoSizeMinTextSizeInPx
     mAutoSizeMaxTextSizeInPx = autoSizeMaxTextSizeInPx
     mAutoSizeStepGranularityInPx = autoSizeStepGranularityInPx
@@ -225,7 +224,7 @@ internal class AutoSizeTextHelper : AutoSizeableText {
   }
 
   private fun setupAutoSizeText(): Boolean {
-    if (supportsAutoSizeText() && mAutoSizeTextType == AutoSizeTextType.Uniform) {
+    if (supportsAutoSizeText() && mAutoScalingType == AutoScalingType.Uniform) {
       // Calculate the sizes set based on minimum size, maximum size and step size if we do
       // not have a predefined set of sizes or if the current sizes array is empty.
       if (!mHasPresetAutoSizeValues || mAutoSizeTextSizesInPx.isEmpty()) {
@@ -252,7 +251,7 @@ internal class AutoSizeTextHelper : AutoSizeableText {
     val sizesLength = mAutoSizeTextSizesInPx.size
     mHasPresetAutoSizeValues = sizesLength > 0
     if (mHasPresetAutoSizeValues) {
-      mAutoSizeTextType = AutoSizeTextType.Uniform
+      mAutoScalingType = AutoScalingType.Uniform
       mAutoSizeMinTextSizeInPx = mAutoSizeTextSizesInPx[0].toFloat()
       mAutoSizeMaxTextSizeInPx = mAutoSizeTextSizesInPx[sizesLength - 1].toFloat()
       mAutoSizeStepGranularityInPx = UNSET_AUTO_SIZE_UNIFORM_CONFIGURATION_VALUE
@@ -261,7 +260,7 @@ internal class AutoSizeTextHelper : AutoSizeableText {
   }
 
   private fun clearAutoSizeConfiguration() {
-    mAutoSizeTextType = AutoSizeTextType.None
+    mAutoScalingType = AutoScalingType.None
     mAutoSizeMinTextSizeInPx = UNSET_AUTO_SIZE_UNIFORM_CONFIGURATION_VALUE
     mAutoSizeMaxTextSizeInPx = UNSET_AUTO_SIZE_UNIFORM_CONFIGURATION_VALUE
     mAutoSizeStepGranularityInPx = UNSET_AUTO_SIZE_UNIFORM_CONFIGURATION_VALUE
@@ -381,7 +380,6 @@ internal class AutoSizeTextHelper : AutoSizeableText {
       constraints = constraints
     )
     val overflow = textLayoutResult.hasVisualOverflow
-    Log.i("TAG", "suggestedSizeFitsInSpace size: $suggestedFontSize, overflow: $overflow")
     return !overflow
   }
 

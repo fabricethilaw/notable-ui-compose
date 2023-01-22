@@ -24,12 +24,28 @@ android {
       )
     }
   }
+
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
   }
   kotlinOptions {
     jvmTarget = "1.8"
+  }
+
+  buildFeatures {
+    compose = true
+  }
+
+  composeOptions {
+    kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+  }
+
+  packagingOptions {
+    // Multiple dependency bring these files in. Exclude them to enable
+    // our test APK to build (has no effect on our AARs)
+    resources.excludes.add("/META-INF/AL2.0")
+    resources.excludes.add("/META-INF/LGPL2.1")
   }
 }
 

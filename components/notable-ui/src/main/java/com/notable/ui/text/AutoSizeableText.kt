@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.TextUnit
 
 /**
  * Interface which describes background auto-sizing calls
- * from [AutoSizeTextHelper] when [AutoSizeText] is about to render a text.
+ * from [DynamicTextScalingHelper] when [ResponsiveText] is about to render a text.
  *
  */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP_PREFIX)
@@ -36,16 +36,16 @@ internal interface AutoSizeableText {
    * Specify whether this widget should automatically scale the text to try to perfectly fit
    * within the layout bounds by using the default auto-size configuration.
    *
-   * @param autoSizeTextType the type of auto-size. Must be one of
-   * [AutoSizeTextType.Uniform] or
-   * [AutoSizeTextType.None]
+   * @param autoScalingType the type of auto-size. Must be one of
+   * [AutoScalingType.Uniform] or
+   * [AutoScalingType.None]
    *
    */
   @OptIn(ExperimentalTextApi::class)
-  fun setAutoSizeTextTypeWithDefaults(
+  fun setUniformScalingOptionWithDefaults(
     density: Density,
     textMeasurer: TextMeasurer,
-    autoSizeTextType: AutoSizeTextType,
+    autoScalingType: AutoScalingType,
     text: AnnotatedString,
     textStyle: TextStyle,
     maxLines: Int,
@@ -55,7 +55,7 @@ internal interface AutoSizeableText {
   /**
    * Specify whether this widget should automatically scale the text to try to perfectly fit
    * within the layout bounds. If all the configuration params are valid the type of auto-size is
-   * set to [AutoSizeTextType.Uniform].
+   * set to [AutoScalingType.Uniform].
    *
    * @param autoSizeMinTextSize the minimum text size available for auto-size
    * @param autoSizeMaxTextSize the maximum text size available for auto-size
@@ -65,7 +65,7 @@ internal interface AutoSizeableText {
    *
    */
   @OptIn(ExperimentalTextApi::class)
-  fun setAutoSizeTextTypeUniformWithConfiguration(
+  fun setScalingWithConfiguration(
     density: Density,
     textMeasurer: TextMeasurer,
     autoSizeMinTextSize: TextUnit,
@@ -80,13 +80,13 @@ internal interface AutoSizeableText {
   /**
    * Specify whether this widget should automatically scale the text to try to perfectly fit
    * within the layout bounds. If at least one value from the `presetSizes` is valid
-   * then the type of auto-size is set to [AutoSizeTextType.Uniform].
+   * then the type of auto-size is set to [AutoScalingType.Uniform].
    *
    * @param presetSizes an array list of sizes in text units.
    *
    */
   @OptIn(ExperimentalTextApi::class)
-  fun setAutoSizeTextTypeUniformWithPresetSizes(
+  fun setScalingWithPresetSizes(
     density: Density,
     textMeasurer: TextMeasurer,
     presetSizes: Array<TextUnit>,
@@ -97,7 +97,7 @@ internal interface AutoSizeableText {
   ): Pair<TextUnit, TextUnit>
 }
 
-internal sealed interface AutoSizeTextType {
-  object Uniform : AutoSizeTextType
-  object None : AutoSizeTextType
+internal sealed interface AutoScalingType {
+  object Uniform : AutoScalingType
+  object None : AutoScalingType
 }
