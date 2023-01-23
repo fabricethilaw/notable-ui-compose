@@ -13,6 +13,11 @@ Clone the repository, the Android project is in *components* folder.
 * The components are implemented in `notable-ui` module.
 * Samples and demos are in `app` module.
 
+💄 Components
+
+* **ResponsiveText**v: extends the Compose built-in Text component by adding a new property `textScale: TextScale`.
+This property allows for uniform scaling of text size and fine-tuning of the font auto-sizing feature. ([Source folder](https://github.com/fabricethilaw/notable-ui-compose/tree/develop/components/notable-ui/src/main/java/com/notable/ui/text))
+
 ## Updates
 
 To update dependencies to their new stable versions, run the following at the root folder of the repository:
