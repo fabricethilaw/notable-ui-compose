@@ -12,8 +12,8 @@ android {
       applicationId = "com.notable.ui"
       minSdk = libs.versions.minSdk.get().toInt()
       targetSdk = libs.versions.targetSdk.get().toInt()
-      versionCode = 23
-      versionName = "0.9.2"
+      versionCode = 25
+      versionName = "0.9.3"
       testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
