@@ -49,8 +49,8 @@ public sealed interface TextScale {
 
   /**
    * Provide a fine-grained configuration for text auto sizing.
-   * @param minTextSize the minimum text size available for auto-size. Must be greater than 0 in text units.
-   * @param maxTextSize the maximum text size available for auto-size. Must be greater than 0 in text units.
+   * @param minSize the minimum text size available for auto-size. Must be greater than 0 in text units.
+   * @param maxSize the maximum text size available for auto-size. Must be greater than 0 in text units.
    * @param stepGranularity the auto-size step granularity in text units. It is used in conjunction with
    * the minimum and maximum text size in order to build the set of text sizes the system uses to
    * choose from when auto-sizing.
@@ -59,8 +59,8 @@ public sealed interface TextScale {
    *
    */
   public data class SizeRange(
-    public val minTextSize: TextUnit,
-    public val maxTextSize: TextUnit,
+    public val minSize: TextUnit,
+    public val maxSize: TextUnit,
     public val stepGranularity: TextUnit
   ) : TextScale
 }
@@ -339,8 +339,8 @@ private fun ResponsiveTextBox(
         scalingHelper.setScalingWithConfiguration(
           density,
           textMeasurer,
-          textScale.minTextSize,
-          textScale.maxTextSize,
+          textScale.minSize,
+          textScale.maxSize,
           textScale.stepGranularity,
           text = buildAnnotatedString { append(text) },
           textStyle = style,
@@ -410,8 +410,8 @@ private fun ResponsiveTextBox(
         scalingHelper.setScalingWithConfiguration(
           density,
           textMeasurer,
-          textScale.minTextSize,
-          textScale.maxTextSize,
+          textScale.minSize,
+          textScale.maxSize,
           textScale.stepGranularity,
           text = text,
           textStyle = style,

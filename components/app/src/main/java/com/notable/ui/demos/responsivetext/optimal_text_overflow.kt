@@ -27,8 +27,8 @@ One morning, as Emma was setting up her tent for the night, she couldn't help bu
     ResponsiveText(
       text = veryLongText,
       textScale = TextScale.SizeRange(
-        minTextSize = 14.sp,
-        maxTextSize = 26.sp,
+        minSize = 14.sp,
+        maxSize = 52.sp,
         stepGranularity = 1.sp
       ),
       overflow = TextOverflow.Ellipsis
