@@ -1,7 +1,8 @@
 # Notable UI
-<img src="readme/samples_montage.gif" alt="Notable UI - UI boilerplate for Android with Jetpack Compose" width="824" />
 
-Android boilerplate designed to accelerate the UI development and launch of your projects.
+![Notable-ui](https://user-images.githubusercontent.com/13453007/214191039-a9531b83-4eb8-4540-97d2-11496ec70635.svg)
+
+Android UI boilerplate designed to accelerate the UI development and launch of your projects.
 
 For more information, please [visit official website](https://notableui.com)
 
