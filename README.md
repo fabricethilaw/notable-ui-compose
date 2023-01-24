@@ -16,7 +16,7 @@ Clone the repository, the Android project is in *components* folder.
 💄 Components
 ------------
 
-* **ResponsiveText**v: extends the Compose built-in Text component by adding a new property `textScale: TextScale`.
+* **ResponsiveText** : extends the Compose built-in Text component by adding a new property `textScale: TextScale`.
 This property allows for uniform scaling of text size and fine-tuning of the font auto-sizing feature. ([Source folder](https://github.com/fabricethilaw/notable-ui-compose/tree/develop/components/notable-ui/src/main/java/com/notable/ui/text))
 
 ## Updates
